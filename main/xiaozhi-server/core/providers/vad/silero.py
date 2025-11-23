@@ -97,3 +97,17 @@ class VADProvider(VADProviderBase):
             logger.bind(tag=TAG).info(f"解码错误: {e}")
         except Exception as e:
             logger.bind(tag=TAG).error(f"Error processing audio packet: {e}")
+
+    async def close(self):
+        """资源清理方法"""
+        try:
+            if hasattr(self, 'decoder') and self.decoder is not None:
+                del self.decoder
+                self.decoder = None
+            if hasattr(self, 'model') and self.model is not None:
+                del self.model
+                self.model = None
+            gc.collect()
+            logger.bind(tag=TAG).debug("Silero VAD资源已释放")
+        except Exception as e:
+            logger.bind(tag=TAG).debug(f"释放Silero VAD资源时出错: {e}")

@@ -1053,6 +1053,12 @@ class ConnectionHandler:
             if hasattr(self, "audio_buffer"):
                 self.audio_buffer.clear()
 
+            # 清理ASR音频缓冲区
+            if hasattr(self, "asr_audio"):
+                self.asr_audio.clear()
+            if hasattr(self, "asr_audio_for_voiceprint"):
+                self.asr_audio_for_voiceprint = []
+
             # 取消超时任务
             if self.timeout_task and not self.timeout_task.done():
                 self.timeout_task.cancel()
@@ -1116,6 +1122,26 @@ class ConnectionHandler:
 
             if self.tts:
                 await self.tts.close()
+
+            # 关闭ASR资源（仅关闭非共享实例）
+            if self.asr:
+                # 只有非本地ASR才需要关闭（本地ASR是共享实例，不能在单个连接关闭时释放）
+                if self.asr is not self._asr:
+                    try:
+                        await self.asr.close()
+                        self.logger.bind(tag=TAG).debug("已关闭非共享ASR实例")
+                    except Exception as asr_error:
+                        self.logger.bind(tag=TAG).debug(f"关闭ASR资源时出错: {asr_error}")
+                else:
+                    self.logger.bind(tag=TAG).debug("跳过共享ASR实例的关闭")
+
+            # VAD是共享实例，不能在单个连接关闭时释放
+            # self.vad = self._vad，所以不需要关闭
+            if self.vad and self.vad is not self._vad:
+                try:
+                    await self.vad.close()
+                except Exception as vad_error:
+                    self.logger.bind(tag=TAG).debug(f"关闭VAD资源时出错: {vad_error}")
 
             # 最后关闭线程池（避免阻塞）
             if self.executor:

@@ -3,6 +3,7 @@ from core.providers.asr.base import ASRProviderBase
 from core.providers.asr.dto.dto import InterfaceType
 import ssl
 import json
+import gc
 import websockets
 from config.logger import setup_logging
 import asyncio
@@ -167,3 +168,13 @@ class ASRProvider(ASRProviderBase):
                     f"Error during speech-to-text conversion: {e}", exc_info=True
                 )
                 return "", file_path
+
+    async def close(self):
+        """资源清理方法"""
+        try:
+            if hasattr(self, 'ssl_context') and self.ssl_context is not None:
+                self.ssl_context = None
+            gc.collect()
+            logger.bind(tag=TAG).debug("FunASR Server资源已释放")
+        except Exception as e:
+            logger.bind(tag=TAG).debug(f"释放FunASR Server资源时出错: {e}")
