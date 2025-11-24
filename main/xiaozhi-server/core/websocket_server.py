@@ -101,20 +101,16 @@ class WebSocketServer:
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"处理连接时出错: {e}")
         finally:
-            # 强制关闭连接（如果还没有关闭的话）
+            # 清理handler资源，包括GC回收
             try:
-                # 安全地检查WebSocket状态并关闭
-                if hasattr(websocket, "closed") and not websocket.closed:
-                    await websocket.close()
-                elif hasattr(websocket, "state") and websocket.state.name != "CLOSED":
-                    await websocket.close()
-                else:
-                    # 如果没有closed属性，直接尝试关闭
-                    await websocket.close()
-            except Exception as close_error:
+                await handler.close(websocket)
+            except Exception as cleanup_error:
                 self.logger.bind(tag=TAG).error(
-                    f"服务器端强制关闭连接时出错: {close_error}"
+                    f"清理handler资源时出错: {cleanup_error}"
                 )
+            finally:
+                # 显式删除handler引用，确保立即回收
+                del handler
 
     async def _http_response(self, websocket, request_headers):
         # 检查是否为 WebSocket 升级请求
