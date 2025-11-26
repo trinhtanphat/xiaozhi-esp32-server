@@ -276,7 +276,7 @@ export default {
 
   // Register page related
   'register.title': 'Tạo tài khoản',
-  'register.welcome': 'Chào mừng đến với XiaoZhi AI',
+  'register.welcome': 'Chào mừng đến với XiaoZhi AI - VNSO',
   'register.usernamePlaceholder': 'Vui lòng nhập tên đăng nhập',
   'register.mobilePlaceholder': 'Vui lòng nhập số điện thoại di động',
   'register.captchaPlaceholder': 'Vui lòng nhập mã xác minh',
@@ -329,7 +329,7 @@ export default {
   'paramDialog.jsonType': 'Đối tượng JSON',
 
   // Login page text
-  'login.title': 'DN',
+  'login.title': 'Đăng nhập',
   'login.welcome': 'CHÀO MỪNG ĐẾN VỚI ĐĂNG NHẬP',
   'login.username': 'Tên đăng nhập',
   'login.usernamePlaceholder': 'Vui lòng nhập tên đăng nhập',

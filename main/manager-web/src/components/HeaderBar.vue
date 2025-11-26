@@ -4,7 +4,7 @@
       <!-- 左侧元素 -->
       <div class="header-left" @click="goHome">
         <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" class="logo-img" />
-        <img loading="lazy" alt="" src="@/assets/xiaozhi-ai.png" class="brand-img" />
+        <img loading="lazy" alt="" src="@/assets/logo.png" class="brand-img" />
       </div>
 
       <!-- 中间导航菜单 -->

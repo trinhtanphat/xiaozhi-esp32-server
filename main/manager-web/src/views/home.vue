@@ -14,7 +14,7 @@
               {{ $t('home.wish') }}
             </div>
             <div class="hi-hint">
-              let's have a wonderful day!
+              Phát Trịnh xin chào cả nhà!
             </div>
             <div class="add-device-btn">
               <div class="left-add" @click="showAddDialog">

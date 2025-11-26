@@ -149,6 +149,8 @@ export function validateMobile(mobile, areaCode) {
 
     // 根据不同区号使用不同的验证规则
     switch (areaCode) {
+        case '+84': // Việt Nam
+            return /^(03|05|07|08|09)\d{8}$/.test(cleanMobile);
         case '+86': // 中国大陆
             return /^1[3-9]\d{9}$/.test(cleanMobile);
         case '+852': // 中国香港

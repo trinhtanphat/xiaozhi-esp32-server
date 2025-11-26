@@ -10,7 +10,7 @@
             gap: 10px;
           ">
           <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" style="width: 45px; height: 45px" />
-          <img loading="lazy" alt="" src="@/assets/xiaozhi-ai.png" style="height: 18px" />
+          <img loading="lazy" alt="" src="@/assets/logo.png" style="height: 18px" />
         </div>
       </el-header>
       <div class="login-person">
@@ -200,7 +200,7 @@ export default {
         password: "",
         captcha: "",
         captchaId: "",
-        areaCode: "+86",
+        areaCode: "+84",
         mobile: "",
       },
       captchaUuid: "",
