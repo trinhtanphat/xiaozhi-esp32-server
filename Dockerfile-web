@@ -45,5 +45,5 @@ EXPOSE 8002
 
 # 启动脚本
 COPY docs/docker/start.sh /start.sh
-RUN chmod +x /start.sh
+RUN dos2unix /start.sh && chmod +x /start.sh
 CMD ["/start.sh"]
