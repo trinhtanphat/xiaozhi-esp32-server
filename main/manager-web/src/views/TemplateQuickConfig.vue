@@ -45,7 +45,7 @@
                   :placeholder="$t('templateQuickConfig.agentSettings.systemPromptPlaceholder')"
                   :validate-event="false"
                   show-word-limit
-                  maxlength="2000"
+                  maxlength="12000"
                 />
               </el-form-item>
             </el-form>

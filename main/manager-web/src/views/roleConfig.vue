@@ -62,7 +62,7 @@
                         resize="none"
                         :placeholder="$t('roleConfig.pleaseEnterContent')"
                         v-model="form.systemPrompt"
-                        maxlength="2000"
+                        maxlength="12000"
                         show-word-limit
                         class="form-textarea"
                       />
@@ -74,7 +74,7 @@
                         rows="6"
                         resize="none"
                         v-model="form.summaryMemory"
-                        maxlength="2000"
+                        maxlength="12000"
                         show-word-limit
                         class="form-textarea"
                         :disabled="form.model.memModelId !== 'Memory_mem_local_short'"

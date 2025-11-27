@@ -489,12 +489,12 @@ onMounted(async () => {
           </text>
         <textarea
           v-model="formData.systemPrompt"
-          :maxlength="2000"
+          :maxlength="12000"
           :placeholder="t('agent.inputRoleDescription')"
           class="box-border h-[500rpx] w-full resize-none break-words break-all border border-[#eeeeee] rounded-[12rpx] bg-[#f5f7fb] p-[20rpx] text-[26rpx] text-[#232338] leading-[1.6] outline-none focus:border-[#336cff] focus:bg-white placeholder:text-[#9d9ea3]"
         />
         <view class="mt-[8rpx] text-right text-[22rpx] text-[#9d9ea3]">
-          {{ (formData.systemPrompt || '').length }}/2000
+          {{ (formData.systemPrompt || '').length }}/12000
         </view>
       </view>
     </view>
