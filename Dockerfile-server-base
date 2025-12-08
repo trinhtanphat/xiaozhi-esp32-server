@@ -16,6 +16,8 @@ RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
     pip config set global.timeout 120 && \
     pip config set install.retries 5
 
+RUN pip install --no-cache-dir huggingface_hub
+
 # 设置环境变量以确保正确的字符编码
 ENV LANG=zh_CN.UTF-8 \
     LC_ALL=zh_CN.UTF-8 \
@@ -26,6 +28,9 @@ WORKDIR /opt/xiaozhi-esp32-server
 
 # 复制requirements.txt
 COPY main/xiaozhi-server/requirements.txt .
+
+# 再复制离线包目录
+COPY main/xiaozhi-server/packages ./packages
 
 # 安装Python依赖
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
