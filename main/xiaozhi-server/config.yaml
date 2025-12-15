@@ -114,8 +114,9 @@ wakeup_words:
 # 详细教程 https://github.com/xinnan-tech/xiaozhi-esp32-server/blob/main/docs/mcp-endpoint-integration.md
 mcp_endpoint: 你的接入点 websocket地址
 
-# 数据上下文填充配置
+# 上下文源配置
 # 用于在系统提示词中注入动态数据，如健康数据、股票信息等
+# 可以添加多个上下文源
 context_providers:
   - url: ""
     headers:
@@ -470,7 +471,6 @@ ASR:
     domain: slm # 识别领域，iat:日常用语，medical:医疗，finance:金融等
     language: zh_cn # 语言，zh_cn:中文，en_us:英文
     accent: mandarin # 方言，mandarin:普通话
-    dwa: wpgs # 动态修正，wpgs:实时返回中间结果
     # 调整音频处理参数以提高长语音识别质量
     output_dir: tmp/
   

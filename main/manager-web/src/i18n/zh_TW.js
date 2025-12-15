@@ -230,6 +230,26 @@ export default {
   'voicePrintDialog.requiredName': '請輸入姓名',
   'voicePrintDialog.requiredAudioVector': '請選擇音頻向量',
 
+  // 上下文源對話框相關
+  'contextProviderDialog.title': '編輯源',
+  'contextProviderDialog.noContextApi': '暫無上下文API',
+  'contextProviderDialog.add': '添加',
+  'contextProviderDialog.apiUrl': '接口地址',
+  'contextProviderDialog.apiUrlPlaceholder': 'http://api.example.com/data',
+  'contextProviderDialog.requestHeaders': '請求頭',
+  'contextProviderDialog.headerKeyPlaceholder': 'Key',
+  'contextProviderDialog.headerValuePlaceholder': 'Value',
+  'contextProviderDialog.noHeaders': '暫無 Headers',
+  'contextProviderDialog.addHeader': '添加 Header',
+  'contextProviderDialog.cancel': '取消',
+  'contextProviderDialog.confirm': '確定',
+
+  // 角色配置頁面-上下文源相關
+  'roleConfig.contextProvider': '上下文源',
+  'roleConfig.contextProviderSuccess': '已成功添加 {count} 個源。',
+  'roleConfig.contextProviderDocLink': '如何部署上下文源',
+  'roleConfig.editContextProvider': '編輯源',
+
   // 聲紋頁面相關
   'voicePrint.pageTitle': '聲紋識別',
   'voicePrint.name': '姓名',
@@ -693,7 +713,7 @@ export default {
   'paramManagement.deleteFailed': '刪除失敗，請重試',
   'paramManagement.operationCancelled': '已取消刪除操作',
   'paramManagement.operationClosed': '操作已關閉',
-  'paramManagement.updateSuccess': '修改成功',
+  'paramManagement.updateSuccess': '修改成功，部分配置需重啟xiaozhi-server模組才生效',
   'paramManagement.addSuccess': '新增成功',
   'paramManagement.updateFailed': '更新失敗',
   'paramManagement.addFailed': '新增失敗',
@@ -832,7 +852,7 @@ export default {
   'modelConfig.enableSuccess': '啟用成功',
   'modelConfig.disableSuccess': '禁用成功',
   'modelConfig.operationFailed': '操作失敗',
-  'modelConfig.setDefaultSuccess': '設置默認模型成功',
+  'modelConfig.setDefaultSuccess': '設置默認模型成功，請及時手動重啟xiaozhi-server模組',
   'modelConfig.itemsPerPage': '{items}條/頁',
   'modelConfig.firstPage': '首頁',
   'modelConfig.prevPage': '上一頁',

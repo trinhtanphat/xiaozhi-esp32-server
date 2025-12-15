@@ -230,6 +230,26 @@ export default {
   'voicePrintDialog.requiredName': 'Please enter name',
   'voicePrintDialog.requiredAudioVector': 'Please select audio vector',
 
+  // Context provider dialog related
+  'contextProviderDialog.title': 'Edit Source',
+  'contextProviderDialog.noContextApi': 'No Context API',
+  'contextProviderDialog.add': 'Add',
+  'contextProviderDialog.apiUrl': 'API URL',
+  'contextProviderDialog.apiUrlPlaceholder': 'http://api.example.com/data',
+  'contextProviderDialog.requestHeaders': 'Request Headers',
+  'contextProviderDialog.headerKeyPlaceholder': 'Key',
+  'contextProviderDialog.headerValuePlaceholder': 'Value',
+  'contextProviderDialog.noHeaders': 'No Headers',
+  'contextProviderDialog.addHeader': 'Add Header',
+  'contextProviderDialog.cancel': 'Cancel',
+  'contextProviderDialog.confirm': 'Confirm',
+
+  // Role config page - context provider related
+  'roleConfig.contextProvider': 'Context',
+  'roleConfig.contextProviderSuccess': 'Successfully added {count} sources.',
+  'roleConfig.contextProviderDocLink': 'How to deploy context provider',
+  'roleConfig.editContextProvider': 'Edit Source',
+
   // Voice print page related
   'voicePrint.pageTitle': 'Voice Print Recognition',
   'voicePrint.name': 'Name',
@@ -693,7 +713,7 @@ export default {
   'paramManagement.deleteFailed': 'Deletion failed, please try again',
   'paramManagement.operationCancelled': 'Deletion cancelled',
   'paramManagement.operationClosed': 'Operation closed',
-  'paramManagement.updateSuccess': 'Update successful',
+  'paramManagement.updateSuccess': 'Update successful. Some configurations will take effect only after restarting the xiaozhi-server module.',
   'paramManagement.addSuccess': 'Add successful',
   'paramManagement.updateFailed': 'Update failed',
   'paramManagement.addFailed': 'Add failed',
@@ -832,7 +852,7 @@ export default {
   'modelConfig.enableSuccess': 'Enable successful',
   'modelConfig.disableSuccess': 'Disable successful',
   'modelConfig.operationFailed': 'Operation failed',
-  'modelConfig.setDefaultSuccess': 'Set default model successful',
+  'modelConfig.setDefaultSuccess': 'Set default model successful, please restart the xiaozhi-server module manually in time',
   'modelConfig.itemsPerPage': '{items} items/page',
   'modelConfig.firstPage': 'First Page',
   'modelConfig.prevPage': 'Previous Page',

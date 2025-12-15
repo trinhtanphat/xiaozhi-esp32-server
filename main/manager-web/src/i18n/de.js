@@ -230,6 +230,26 @@ export default {
   'voicePrintDialog.requiredName': 'Bitte Namen eingeben',
   'voicePrintDialog.requiredAudioVector': 'Bitte Audio-Vektor auswählen',
 
+  // Context provider dialog related
+  'contextProviderDialog.title': 'Quelle bearbeiten',
+  'contextProviderDialog.noContextApi': 'Keine Kontext-API',
+  'contextProviderDialog.add': 'Hinzufügen',
+  'contextProviderDialog.apiUrl': 'API-URL',
+  'contextProviderDialog.apiUrlPlaceholder': 'http://api.example.com/data',
+  'contextProviderDialog.requestHeaders': 'Anfrage-Header',
+  'contextProviderDialog.headerKeyPlaceholder': 'Schlüssel',
+  'contextProviderDialog.headerValuePlaceholder': 'Wert',
+  'contextProviderDialog.noHeaders': 'Keine Headers',
+  'contextProviderDialog.addHeader': 'Header hinzufügen',
+  'contextProviderDialog.cancel': 'Abbrechen',
+  'contextProviderDialog.confirm': 'Bestätigen',
+
+  // Role config page - context provider related
+  'roleConfig.contextProvider': 'Kontext',
+  'roleConfig.contextProviderSuccess': '{count} Quellen erfolgreich hinzugefügt.',
+  'roleConfig.contextProviderDocLink': 'Wie man Kontextquellen bereitstellt',
+  'roleConfig.editContextProvider': 'Quelle bearbeiten',
+
   // Voice print page related
   'voicePrint.pageTitle': 'Stimmabdruck-Erkennung',
   'voicePrint.name': 'Name',
@@ -693,7 +713,7 @@ export default {
   'paramManagement.deleteFailed': 'Löschen fehlgeschlagen, bitte versuchen Sie es erneut',
   'paramManagement.operationCancelled': 'Löschen abgebrochen',
   'paramManagement.operationClosed': 'Operation geschlossen',
-  'paramManagement.updateSuccess': 'Aktualisierung erfolgreich',
+  'paramManagement.updateSuccess': 'Aktualisierung erfolgreich. Einige Konfigurationen werden erst nach Neustart des xiaozhi-server-Moduls wirksam.',
   'paramManagement.addSuccess': 'Hinzufügen erfolgreich',
   'paramManagement.updateFailed': 'Aktualisierung fehlgeschlagen',
   'paramManagement.addFailed': 'Hinzufügen fehlgeschlagen',
@@ -832,7 +852,7 @@ export default {
   'modelConfig.enableSuccess': 'Aktivieren erfolgreich',
   'modelConfig.disableSuccess': 'Deaktivieren erfolgreich',
   'modelConfig.operationFailed': 'Operation fehlgeschlagen',
-  'modelConfig.setDefaultSuccess': 'Standardmodell erfolgreich gesetzt',
+  'modelConfig.setDefaultSuccess': 'Standardmodell erfolgreich gesetzt, bitte starten Sie das xiaozhi-server-Modul zeitnah manuell neu',
   'modelConfig.itemsPerPage': '{items} Einträge/Seite',
   'modelConfig.firstPage': 'Erste Seite',
   'modelConfig.prevPage': 'Vorherige Seite',

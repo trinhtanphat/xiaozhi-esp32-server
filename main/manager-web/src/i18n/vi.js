@@ -230,6 +230,26 @@ export default {
   'voicePrintDialog.requiredName': 'Vui lòng nhập tên',
   'voicePrintDialog.requiredAudioVector': 'Vui lòng chọn vector âm thanh',
 
+  // Context provider dialog related
+  'contextProviderDialog.title': 'Chỉnh sửa nguồn',
+  'contextProviderDialog.noContextApi': 'Không có API ngữ cảnh',
+  'contextProviderDialog.add': 'Thêm',
+  'contextProviderDialog.apiUrl': 'Địa chỉ API',
+  'contextProviderDialog.apiUrlPlaceholder': 'http://api.example.com/data',
+  'contextProviderDialog.requestHeaders': 'Header yêu cầu',
+  'contextProviderDialog.headerKeyPlaceholder': 'Khóa',
+  'contextProviderDialog.headerValuePlaceholder': 'Giá trị',
+  'contextProviderDialog.noHeaders': 'Không có Headers',
+  'contextProviderDialog.addHeader': 'Thêm Header',
+  'contextProviderDialog.cancel': 'Hủy bỏ',
+  'contextProviderDialog.confirm': 'Xác nhận',
+
+  // Role config page - context provider related
+  'roleConfig.contextProvider': 'Bối cảnh',
+  'roleConfig.contextProviderSuccess': 'Đã thêm thành công {count} nguồn.',
+  'roleConfig.contextProviderDocLink': 'Cách triển khai nguồn ngữ cảnh',
+  'roleConfig.editContextProvider': 'Chỉnh sửa nguồn',
+
   // Voice print page related
   'voicePrint.pageTitle': 'Nhận dạng dấu giọng nói',
   'voicePrint.name': 'Tên',
@@ -693,7 +713,7 @@ export default {
   'paramManagement.deleteFailed': 'Xóa thất bại, vui lòng thử lại',
   'paramManagement.operationCancelled': 'Đã hủy xóa',
   'paramManagement.operationClosed': 'Đã đóng thao tác',
-  'paramManagement.updateSuccess': 'Cập nhật thành công',
+  'paramManagement.updateSuccess': 'Cập nhật thành công. Một số cấu hình chỉ có hiệu lực sau khi khởi động lại mô-đun xiaozhi-server.',
   'paramManagement.addSuccess': 'Thêm thành công',
   'paramManagement.updateFailed': 'Cập nhật thất bại',
   'paramManagement.addFailed': 'Thêm thất bại',
@@ -832,7 +852,7 @@ export default {
   'modelConfig.enableSuccess': 'Bật thành công',
   'modelConfig.disableSuccess': 'Tắt thành công',
   'modelConfig.operationFailed': 'Thao tác thất bại',
-  'modelConfig.setDefaultSuccess': 'Đặt mô hình mặc định thành công',
+  'modelConfig.setDefaultSuccess': 'Đặt mô hình mặc định thành công, vui lòng khởi động lại module xiaozhi-server thủ công kịp thời',
   'modelConfig.itemsPerPage': '{items} mục/trang',
   'modelConfig.firstPage': 'Trang đầu',
   'modelConfig.prevPage': 'Trang trước',
