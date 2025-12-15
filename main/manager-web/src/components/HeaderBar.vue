@@ -3,7 +3,7 @@
     <div class="header-container">
       <!-- 左侧元素 -->
       <div class="header-left" @click="goHome">
-        <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" class="logo-img" />
+        <!-- <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" class="logo-img" /> -->
         <img loading="lazy" alt="" src="@/assets/logo.png" class="brand-img" />
       </div>
 

@@ -8,6 +8,7 @@ RUN apt-get update && \
     sed -i '/zh_CN.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen && \
     apt-get clean && \
+    apt-get install -y redis-tools && \
     rm -rf /var/lib/apt/lists/*
 
 # 配置pip使用国内镜像源（阿里云）并设置超时和重试
