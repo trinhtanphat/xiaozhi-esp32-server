@@ -1,7 +1,11 @@
 # 生产镜像，仅包含应用代码
 # FROM ghcr.io/xinnan-tech/xiaozhi-esp32-server:server-base
 
-FROM xiaozhi-esp32-server:server-base-latest
+# ❌ Dòng cũ (xóa đi):
+# FROM xiaozhi-esp32-server:server-base-latest
+
+# ✅ Sửa thành (thay tên user của bạn vào):
+FROM ghcr.io/trinhtanphat/xiaozhi-esp32-server:server-base-vnso
 
 COPY main/xiaozhi-server .
 
