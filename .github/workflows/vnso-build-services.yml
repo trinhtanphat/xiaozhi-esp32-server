@@ -1,0 +1,87 @@
+name: Build Services VNSO
+
+on:
+  push:
+    branches:
+      - vnso
+  # Tự động chạy khi workflow "Build Base Image VNSO" hoàn tất
+  workflow_run:
+    workflows: ["Build Base Image VNSO"]
+    types:
+      - completed
+  workflow_dispatch: # Cho phép bấm nút chạy thủ công
+
+jobs:
+  build-and-deploy:
+    name: Build services and Deploy
+    runs-on: ubuntu-latest
+    # Chỉ chạy nếu workflow trước thành công (hoặc do push code)
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      packages: write
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- BUILD SERVER ---
+      - name: Build and push xiaozhi-server
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile-server
+          push: true
+          # Tag ngắn gọn cho branch vnso
+          tags: ghcr.io/${{ github.repository }}:server-vnso
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_PROGRESS=plain
+
+      # --- BUILD WEB (Nếu có) ---
+      - name: Build and push manager-web
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile-web
+          push: true
+          tags: ghcr.io/${{ github.repository }}:web-vnso
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --- DEPLOY LÊN VPS (Phần này thêm vào để tự động như bạn muốn) ---
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # 1. Vào thư mục dự án, nơi chứa file docker-compose.yml
+            cd ~/dockercompose
+            
+            # 2. Login vào GHCR trên VPS (nếu image là private)
+            # echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # 3. Pull image mới về
+            docker pull ghcr.io/${{ github.repository }}:server-vnso
+            docker pull ghcr.io/${{ github.repository }}:web-vnso
+
+            # 4. Restart container bằng docker-compose
+            docker-compose up -d --force-recreate
+
+            # 5. Dọn dẹp
+            docker image prune -f
