@@ -69,6 +69,10 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+
+          # 👇 THÊM DÒNG NÀY (Tăng giới hạn lên 30 phút)
+          command_timeout: 120m 
+
           script: |
             # 1. Vào thư mục dự án, nơi chứa file docker-compose.yml
             cd ~/dockercompose
@@ -81,7 +85,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository }}:web-vnso
 
             # 4. Restart container bằng docker-compose
-            docker-compose up -d --force-recreate
+            docker compose up -d --force-recreate
 
             # 5. Dọn dẹp
             docker image prune -f
