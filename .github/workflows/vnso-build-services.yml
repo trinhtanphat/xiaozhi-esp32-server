@@ -35,29 +35,34 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- BUILD SERVER ---
+      # --- BUILD SERVER (Tạo 2 tags: server_latest và vnso_server_latest) ---
       - name: Build and push xiaozhi-server
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile-server
           push: true
-          # Tag ngắn gọn cho branch vnso
-          tags: ghcr.io/${{ github.repository }}:server-vnso
+          # 👇 SỬA Ở ĐÂY: Dùng dấu gạch dọc | để xuống dòng viết nhiều tag
+          tags: |
+            ghcr.io/${{ github.repository }}:server_latest
+            ghcr.io/${{ github.repository }}:vnso_server_latest
           platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             BUILDKIT_PROGRESS=plain
 
-      # --- BUILD WEB (Nếu có) ---
+      # --- BUILD WEB (Tạo 2 tags: web_latest và vnso_web_latest) ---
       - name: Build and push manager-web
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile-web
           push: true
-          tags: ghcr.io/${{ github.repository }}:web-vnso
+          # 👇 SỬA Ở ĐÂY
+          tags: |
+            ghcr.io/${{ github.repository }}:web_latest
+            ghcr.io/${{ github.repository }}:vnso_web_latest
           platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -81,8 +86,8 @@ jobs:
             # echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             # 3. Pull image mới về
-            docker pull ghcr.io/${{ github.repository }}:server-vnso
-            docker pull ghcr.io/${{ github.repository }}:web-vnso
+            docker pull ghcr.io/${{ github.repository }}:vnso_server_latest
+            docker pull ghcr.io/${{ github.repository }}:vnso_web_latest
 
             # 4. Restart container bằng docker-compose
             docker compose up -d --force-recreate
