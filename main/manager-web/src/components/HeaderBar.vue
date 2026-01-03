@@ -681,7 +681,7 @@ export default {
 }
 
 .logo-img {
-  width: 42px;
+  width: 126px;
   height: 42px;
 }
 
