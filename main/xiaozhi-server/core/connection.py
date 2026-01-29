@@ -85,6 +85,7 @@ class ConnectionHandler:
         self.max_output_size = 0
         self.chat_history_conf = 0
         self.audio_format = "opus"
+        self.sample_rate = 24000  # 默认采样率，从客户端 hello 消息中动态更新
 
         # 客户端状态相关
         self.client_abort = False
@@ -130,6 +131,8 @@ class ConnectionHandler:
         # 所以涉及到ASR的变量，需要在这里定义，属于connection的私有变量
         self.asr_audio = []
         self.asr_audio_queue = queue.Queue()
+        self.current_speaker = None  # 存储当前说话人
+        self.current_language_tag = None  # 存储当前ASR识别的语言标签
 
         # llm相关变量
         self.llm_finish_task = True
@@ -203,6 +206,10 @@ class ConnectionHandler:
 
             self.welcome_msg = self.config["xiaozhi"]
             self.welcome_msg["session_id"] = self.session_id
+
+            # 从配置中读取采样率
+            self.sample_rate = self.welcome_msg["audio_params"]["sample_rate"]
+            self.logger.bind(tag=TAG).info(f"配置输出音频采样率为: {self.sample_rate}")
 
             # 在后台初始化配置和组件（完全不阻塞主循环）
             asyncio.create_task(self._background_initialize())

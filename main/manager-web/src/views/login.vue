@@ -5,8 +5,8 @@
         <div style="
             display: flex;
             align-items: center;
-            margin-top: 15px;
-            margin-left: 10px;
+            margin-top: 11px;
+            margin-left: 11px;
             gap: 10px;
           ">
           <img loading="lazy" alt="" src="@/assets/logo.png" style="width: 135px; height: 45px" />
