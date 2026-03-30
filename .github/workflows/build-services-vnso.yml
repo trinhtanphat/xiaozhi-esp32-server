@@ -1,14 +1,12 @@
-name: Docker Image CI
+name: Build Services VNSO
 
 on:
   push:
     branches:
-      - main
-    tags:
-      - 'v*.*.*'  # 只在以 v 开头的标签推送时触发，例如 v1.0.0
+      - vnso
   workflow_dispatch:
   workflow_run:
-    workflows: ["Build Base Image"]
+    workflows: ["Build Base Image VNSO"]
     types:
       - completed
 
@@ -17,7 +15,7 @@ env:
 
 jobs:
   release:
-    name: Release Docker images
+    name: Release Docker images (vnso)
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -66,32 +64,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: Extract version from tag
-        id: get_version
+      - name: Decide vnso tags
         run: |
           IMAGE_REPO="ghcr.io/${{ github.repository }}"
-          if [[ "$GITHUB_REF" =~ ^refs/tags/v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            echo "VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-            echo "IS_VERSION=true" >> $GITHUB_ENV
-            echo "SERVER_TAGS=${IMAGE_REPO}:server_${BASH_REMATCH[1]},${IMAGE_REPO}:server_latest" >> $GITHUB_ENV
-            echo "WEB_TAGS=${IMAGE_REPO}:web_${BASH_REMATCH[1]},${IMAGE_REPO}:web_latest" >> $GITHUB_ENV
-          else
-            echo "VERSION=latest" >> $GITHUB_ENV
-            echo "IS_VERSION=false" >> $GITHUB_ENV
-            BRANCH_NAME="${GITHUB_REF_NAME//\//-}"
-            if [[ "$BRANCH_NAME" == "main" ]]; then
-              SERVER_SUFFIX="latest"
-              WEB_SUFFIX="latest"
-            else
-              SERVER_SUFFIX="${BRANCH_NAME}_latest"
-              WEB_SUFFIX="${BRANCH_NAME}_latest"
-            fi
-            echo "SERVER_TAGS=${IMAGE_REPO}:server_${SERVER_SUFFIX}" >> $GITHUB_ENV
-            echo "WEB_TAGS=${IMAGE_REPO}:web_${WEB_SUFFIX}" >> $GITHUB_ENV
-          fi
+          echo "SERVER_TAGS=${IMAGE_REPO}:server_vnso_latest" >> $GITHUB_ENV
+          echo "WEB_TAGS=${IMAGE_REPO}:web_vnso_latest" >> $GITHUB_ENV
 
-      # 构建 xiaozhi-server 镜像
-      - name: Build and push xiaozhi-server
+      - name: Build and push xiaozhi-server (vnso)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -99,13 +78,12 @@ jobs:
           push: true
           tags: ${{ env.SERVER_TAGS }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=server-vnso
+          cache-to: type=gha,mode=max,scope=server-vnso
           build-args: |
             BUILDKIT_PROGRESS=plain
 
-      # 构建 manager-api 镜像
-      - name: Build and push manager-web
+      - name: Build and push manager-web (vnso)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -113,7 +91,7 @@ jobs:
           push: true
           tags: ${{ env.WEB_TAGS }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=web-vnso
+          cache-to: type=gha,mode=max,scope=web-vnso
           build-args: |
             BUILDKIT_PROGRESS=plain

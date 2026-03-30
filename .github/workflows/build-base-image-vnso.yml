@@ -1,20 +1,21 @@
-name: Build Base Image
+name: Build Base Image VNSO
 
 on:
   push:
     branches:
-      - main
+      - vnso
     paths:
       - 'main/xiaozhi-server/requirements.txt'
       - 'Dockerfile-server-base'
-      - '.github/workflows/build-base-image.yml'
+      - '.github/workflows/build-base-image-vnso.yml'
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   build-base:
-    name: Build and push server base image
+    name: Build and push server base image (vnso)
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -48,20 +49,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: Build and push server-base
+      - name: Build and push server-base (vnso)
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile-server-base
           push: true
-          tags: ghcr.io/${{ github.repository }}:server-base
+          tags: ghcr.io/${{ github.repository }}:server-base_vnso
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha,scope=server-base
-          cache-to: type=gha,mode=max,scope=server-base
+          cache-from: type=gha,scope=server-base-vnso
+          cache-to: type=gha,mode=max,scope=server-base-vnso
           build-args: |
             BUILDKIT_PROGRESS=plain
-
-      - name: Output image info
-        run: |
-          echo "✅ Base image built and pushed successfully!"
-          echo "📦 Tag: ghcr.io/${{ github.repository }}:server-base"
