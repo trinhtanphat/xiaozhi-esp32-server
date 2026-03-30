@@ -530,6 +530,7 @@ databaseChangeLog:
             encoding: utf8
             path: classpath:db/changelog/202602051125.sql
   - changeSet:
+<<<<<<< HEAD
       id: 202602061650
       author: DaGou12138
       changes:
@@ -578,3 +579,10 @@ databaseChangeLog:
         - sqlFile:
             encoding: utf8
             path: classpath:db/changelog/202603231037.sql
+  - changeSet:
+      id: 202603301200
+      author: social-login
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: classpath:db/changelog/202603301200.sql
