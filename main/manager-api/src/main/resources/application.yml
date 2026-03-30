@@ -43,8 +43,24 @@ renren:
     enabled: true
     exclude-urls:
 
+# Social Login OAuth2 Configuration
+social-login:
+  google:
+    client-id: ${SOCIAL_GOOGLE_CLIENT_ID:}
+    client-secret: ${SOCIAL_GOOGLE_CLIENT_SECRET:}
+    redirect-uri: ${SOCIAL_GOOGLE_REDIRECT_URI:http://localhost:8080/oauth/callback}
+  facebook:
+    client-id: ${SOCIAL_FACEBOOK_CLIENT_ID:}
+    client-secret: ${SOCIAL_FACEBOOK_CLIENT_SECRET:}
+    redirect-uri: ${SOCIAL_FACEBOOK_REDIRECT_URI:http://localhost:8080/oauth/callback}
+  github:
+    client-id: ${SOCIAL_GITHUB_CLIENT_ID:}
+    client-secret: ${SOCIAL_GITHUB_CLIENT_SECRET:}
+    redirect-uri: ${SOCIAL_GITHUB_REDIRECT_URI:http://localhost:8080/oauth/callback}
+
 #mybatis
 mybatis-plus:
+
   mapper-locations: classpath*:/mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: xiaozhi.modules.*.entity
