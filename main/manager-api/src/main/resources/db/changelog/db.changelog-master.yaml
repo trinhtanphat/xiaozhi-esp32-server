@@ -530,7 +530,6 @@ databaseChangeLog:
             encoding: utf8
             path: classpath:db/changelog/202602051125.sql
   - changeSet:
-<<<<<<< HEAD
       id: 202602061650
       author: DaGou12138
       changes:
