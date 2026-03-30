@@ -53,6 +53,13 @@ const routes = [
       return import('../views/retrievePassword.vue')
     }
   },
+  {
+    path: '/oauth/callback',
+    name: 'OAuthCallback',
+    component: function () {
+      return import('../views/OAuthCallback.vue')
+    }
+  },
   // 设备管理页面路由
   {
     path: '/device-management',

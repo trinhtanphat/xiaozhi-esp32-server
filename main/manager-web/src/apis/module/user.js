@@ -201,4 +201,45 @@ export default {
             }).send()
     },
 
+    // 获取社交登录授权URL
+    getSocialLoginUrl(provider, callback, failCallback) {
+        RequestService.sendRequest()
+            .url(`${getServiceUrl()}/user/social-login/${provider}/url`)
+            .method('GET')
+            .success((res) => {
+                RequestService.clearRequestTime()
+                callback(res)
+            })
+            .fail((err) => {
+                RequestService.clearRequestTime()
+                if (failCallback) failCallback(err)
+            })
+            .networkFail(() => {
+                RequestService.reAjaxFun(() => {
+                    this.getSocialLoginUrl(provider, callback, failCallback)
+                })
+            }).send()
+    },
+
+    // 社交登录回调
+    socialLoginCallback(provider, data, callback, failCallback) {
+        RequestService.sendRequest()
+            .url(`${getServiceUrl()}/user/social-login/${provider}/callback`)
+            .method('POST')
+            .data(data)
+            .success((res) => {
+                RequestService.clearRequestTime()
+                callback(res)
+            })
+            .fail((err) => {
+                RequestService.clearRequestTime()
+                if (failCallback) failCallback(err)
+            })
+            .networkFail(() => {
+                RequestService.reAjaxFun(() => {
+                    this.socialLoginCallback(provider, data, callback, failCallback)
+                })
+            }).send()
+    },
+
 }
