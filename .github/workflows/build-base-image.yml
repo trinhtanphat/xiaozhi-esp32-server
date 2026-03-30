@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - vnso
     paths:
       - 'main/xiaozhi-server/requirements.txt'
       - 'Dockerfile-server-base'
