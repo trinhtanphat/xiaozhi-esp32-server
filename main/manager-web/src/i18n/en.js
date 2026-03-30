@@ -371,6 +371,13 @@ export default {
   'login.privacyPolicy': 'Privacy Policy',
   'login.registerAccount': 'Register Account',
 
+  // Social Login
+  'socialLogin.or': 'Or sign in with',
+  'socialLogin.processing': 'Signing in, please wait...',
+  'socialLogin.backToLogin': 'Back to Login',
+  'socialLogin.loginFailed': 'Social login failed, please try again',
+  'socialLogin.invalidCallback': 'Invalid login callback parameters',
+
   // Retrieve password page text
   'retrievePassword.title': 'Reset Password',
   'retrievePassword.welcome': 'PASSWORD RETRIEVE',

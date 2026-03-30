@@ -371,6 +371,13 @@ export default {
   'login.privacyPolicy': 'Datenschutzrichtlinie',
   'login.registerAccount': 'Konto registrieren',
 
+  // Social Login
+  'socialLogin.or': 'Oder anmelden mit',
+  'socialLogin.processing': 'Anmeldung läuft, bitte warten...',
+  'socialLogin.backToLogin': 'Zurück zur Anmeldung',
+  'socialLogin.loginFailed': 'Soziale Anmeldung fehlgeschlagen, bitte erneut versuchen',
+  'socialLogin.invalidCallback': 'Ungültige Anmelde-Callback-Parameter',
+
   // Retrieve password page text
   'retrievePassword.title': 'Passwort zurücksetzen',
   'retrievePassword.welcome': 'PASSWORTWIEDERHERSTELLUNG',

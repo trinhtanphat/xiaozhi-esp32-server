@@ -371,6 +371,13 @@ export default {
   'login.privacyPolicy': 'Chính sách bảo mật',
   'login.registerAccount': 'Đăng ký tài khoản',
 
+  // Đăng nhập mạng xã hội
+  'socialLogin.or': 'Hoặc đăng nhập bằng',
+  'socialLogin.processing': 'Đang đăng nhập, vui lòng chờ...',
+  'socialLogin.backToLogin': 'Quay lại đăng nhập',
+  'socialLogin.loginFailed': 'Đăng nhập mạng xã hội thất bại, vui lòng thử lại',
+  'socialLogin.invalidCallback': 'Tham số callback đăng nhập không hợp lệ',
+
   // Retrieve password page text
   'retrievePassword.title': 'Đặt lại mật khẩu',
   'retrievePassword.welcome': 'KHÔI PHỤC MẬT KHẨU',

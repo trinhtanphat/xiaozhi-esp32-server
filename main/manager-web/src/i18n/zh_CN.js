@@ -371,6 +371,13 @@ export default {
   'login.privacyPolicy': '《隐私政策》',
   'login.registerAccount': '注册账号',
 
+  // 第三方社交登录
+  'socialLogin.or': '或使用以下方式登录',
+  'socialLogin.processing': '正在登录中，请稍候...',
+  'socialLogin.backToLogin': '返回登录',
+  'socialLogin.loginFailed': '第三方登录失败，请重试',
+  'socialLogin.invalidCallback': '登录回调参数无效',
+
   // 忘记密码页面文本
   'retrievePassword.title': '重置密码',
   'retrievePassword.welcome': '密码找回',
