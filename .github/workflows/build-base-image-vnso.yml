@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - vnso
-    paths:
-      - 'main/xiaozhi-server/requirements.txt'
-      - 'Dockerfile-server-base'
-      - '.github/workflows/build-base-image-vnso.yml'
   workflow_dispatch:
 
 env:
