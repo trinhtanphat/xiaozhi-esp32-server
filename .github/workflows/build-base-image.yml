@@ -9,6 +9,9 @@ on:
       - 'Dockerfile-server-base'
       - '.github/workflows/build-base-image.yml'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   build-base:
     name: Build and push server base image
@@ -17,8 +20,23 @@ jobs:
       packages: write
       contents: read
     steps:
-      - name: Checkout code
+      - name: Stabilize git transport
+        run: |
+          git config --global http.version HTTP/1.1
+          git config --global http.postBuffer 524288000
+
+      - name: Checkout code (attempt 1)
+        id: checkout1
+        continue-on-error: true
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Checkout code (retry)
+        if: steps.checkout1.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
