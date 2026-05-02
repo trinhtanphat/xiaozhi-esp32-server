@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xiaozhi ESP32 Server - Security & Runtime Audit - 2026-05-02</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --paper: #ffffff;
+      --ink: #18202f;
+      --muted: #5d6677;
+      --line: #dfe4ee;
+      --accent: #2563eb;
+      --critical: #b42318;
+      --high: #b54708;
+      --medium: #175cd3;
+      --ok: #067647;
+      --code: #101828;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 64px;
+    }
+    header, section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+    h1 { font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; }
+    h2 { font-size: 22px; margin-top: 4px; }
+    h3 { font-size: 17px; margin-top: 20px; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
+    .pill, .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+    }
+    .critical { color: var(--critical); background: #fff1f0; border-color: #fecdca; }
+    .high { color: var(--high); background: #fffaeb; border-color: #fedf89; }
+    .medium { color: var(--medium); background: #eff8ff; border-color: #b2ddff; }
+    .ok { color: var(--ok); background: #ecfdf3; border-color: #abefc6; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fcfcfd;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 4px;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+    th { background: #f2f4f7; font-size: 13px; color: #344054; }
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      color: var(--code);
+      background: #f2f4f7;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    code { padding: 2px 5px; }
+    pre { padding: 14px; overflow: auto; white-space: pre-wrap; }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    li { margin: 6px 0; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="pill medium">Security & Runtime Audit</span>
+      <h1>Xiaozhi ESP32 Server</h1>
+      <p>Audit nhanh repo, Docker runtime, logs, cấu hình deploy và hành động shutdown theo yêu cầu ngày 2026-05-02.</p>
+      <div class="meta">
+        <div><strong>Repo:</strong> <code>/root/xiaozhi-esp32-server</code></div>
+        <div><strong>Runtime compose:</strong> <code>/root/dockercompose/docker-compose.yml</code></div>
+        <div><strong>Kết luận:</strong> <span class="status high">Không thấy bằng chứng hack, nhưng service đang lỗi nghiêm trọng</span></div>
+        <div><strong>Action:</strong> <span class="status ok">Backend Xiaozhi đã shutdown</span></div>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Executive Summary</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Kết luận điều tra</h3>
+          <p>Chưa tìm thấy dấu hiệu repo bị cài backdoor, reverse shell, miner, cron lạ, SSH key lạ hoặc tiến trình runtime đáng ngờ. Rủi ro chính hiện tại là cấu hình deploy yếu và backend đang rơi vào restart loop.</p>
+        </div>
+        <div class="card">
+          <h3>Sự cố runtime chính</h3>
+          <p><code>xiaozhi-esp32-server</code> có <strong>RestartCount=6775</strong>. Log cho thấy server gọi <code>http://127.0.0.1:8002/xiaozhi/config/server-base</code> và nhận <code>502 Bad Gateway</code>, sau đó crash/restart liên tục.</p>
+        </div>
+        <div class="card">
+          <h3>Trạng thái shutdown</h3>
+          <p>Đã tắt auto-restart và stop các container backend: server, MySQL, Redis, phpMyAdmin. Container web/nginx vẫn giữ lại vì nó đang làm reverse proxy chung cho nhiều domain khác, không chỉ Xiaozhi.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Đánh giá:</strong> Đây giống lỗi cấu hình/deployment gây self-DoS hơn là một vụ hack đã được xác nhận. Tuy vậy, vì có secret trong config runtime, port public và sandbox bị nới lỏng, nên cần hardening trước khi bật lại.
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Evidence Collected</h2>
+      <table>
+        <thead>
+          <tr><th>Nhóm kiểm tra</th><th>Bằng chứng</th><th>Đánh giá</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Git/repo state</td>
+            <td>Repo chỉ có file mới <code>AI_CONTEXT.md</code> trước audit. Không thấy thay đổi code lạ trong kết quả git status.</td>
+            <td><span class="status ok">Không thấy compromise indicator</span></td>
+          </tr>
+          <tr>
+            <td>Repo content scan</td>
+            <td>Không thấy reverse shell pattern, miner keyword, SSH private key, env dump, SQL dump, cron persistence hoặc curl-pipe-shell nguy hiểm trong repo chính.</td>
+            <td><span class="status ok">Sạch ở mức scan nhanh</span></td>
+          </tr>
+          <tr>
+            <td>Docker runtime</td>
+            <td><code>xiaozhi-esp32-server</code> chạy image <code>ghcr.io/trinhtanphat/xiaozhi-esp32-server:vnso_server_latest</code>, restart count 6775, không publish port trực tiếp vì dùng <code>network_mode: host</code>.</td>
+            <td><span class="status critical">Unhealthy / crash loop</span></td>
+          </tr>
+          <tr>
+            <td>Web/nginx container</td>
+            <td><code>xiaozhi-esp32-server-web</code> đang publish <code>80</code>, <code>443</code>, <code>8002</code> và process hiện thấy là nginx. Không thấy process lạ trong container web.</td>
+            <td><span class="status medium">Rủi ro do public edge</span></td>
+          </tr>
+          <tr>
+            <td>Endpoint health</td>
+            <td><code>curl http://127.0.0.1:8002/xiaozhi/config/server-base</code> trả <code>502</code>. <code>curl http://127.0.0.1:8003/xiaozhi/ota/</code> trả connection refused.</td>
+            <td><span class="status critical">Config/API không hoạt động</span></td>
+          </tr>
+          <tr>
+            <td>Logs</td>
+            <td>Python server crash khi lấy config từ manager API URL. Log Spring Boot cũ từng báo lỗi Redis DNS <code>UnknownHostException</code>.</td>
+            <td><span class="status high">Misconfigured service mesh</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. Runtime Incident Detail</h2>
+      <h3>Observed failure chain</h3>
+      <pre>xiaozhi-esp32-server starts
+  -> reads /opt/xiaozhi-esp32-server/data/.config.yaml
+  -> manager-api.url = http://127.0.0.1:8002/xiaozhi
+  -> POST /xiaozhi/config/server-base
+  -> nginx on :8002 proxies /xiaozhi/ to http://127.0.0.1:8003
+  -> port 8003 belongs to the Python server that is still starting / crashing
+  -> 502 Bad Gateway
+  -> config loader raises HTTPStatusError
+  -> container exits and restarts</pre>
+      <p>This is a circular dependency/deploy wiring problem: the server depends on a config endpoint that currently routes back to the server-side OTA/API port instead of a healthy manager API service.</p>
+    </section>
+
+    <section>
+      <h2>4. Findings</h2>
+      <table>
+        <thead>
+          <tr><th>Severity</th><th>Finding</th><th>Where</th><th>Impact</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status critical">Critical</span></td>
+            <td>Backend server crash loop, 6775 restarts.</td>
+            <td>Docker state/logs</td>
+            <td>Service unavailable, log noise, resource churn.</td>
+            <td>Fix <code>manager-api.url</code> and ensure manager API is a real upstream, then re-enable restart policy.</td>
+          </tr>
+          <tr>
+            <td><span class="status high">High</span></td>
+            <td>Secrets and operational tokens exist in runtime config/compose.</td>
+            <td><code>/root/dockercompose/docker-compose.yml</code>, <code>/root/dockercompose/data/.config.yaml</code></td>
+            <td>Credential exposure risk if host/repo/logs are leaked.</td>
+            <td>Rotate secrets, move to Docker secrets or env files outside repo, restrict file permissions.</td>
+          </tr>
+          <tr>
+            <td><span class="status high">High</span></td>
+            <td>Public ports on shared nginx edge include <code>80</code>, <code>443</code>, <code>8002</code>.</td>
+            <td><code>xiaozhi-esp32-server-web</code></td>
+            <td>Admin/API surface is internet-reachable if Cloudflare/firewall allows it.</td>
+            <td>Bind admin port to localhost/VPN, add auth/rate limit, block direct public <code>8002</code>.</td>
+          </tr>
+          <tr>
+            <td><span class="status medium">Medium</span></td>
+            <td><code>seccomp:unconfined</code> disables Docker syscall sandboxing.</td>
+            <td><code>main/xiaozhi-server/docker-compose*.yml</code>, runtime compose</td>
+            <td>Container escape blast radius is larger if an app-level exploit lands.</td>
+            <td>Remove unless a verified model/audio dependency requires it; prefer targeted capabilities.</td>
+          </tr>
+          <tr>
+            <td><span class="status medium">Medium</span></td>
+            <td>Repo sample compose contains default passwords such as <code>123456</code>.</td>
+            <td><code>main/xiaozhi-server/docker-compose_all.yml</code>, <code>application-dev.yml</code></td>
+            <td>Developers may deploy sample defaults by accident.</td>
+            <td>Replace with placeholders and add <code>.env.example</code>.</td>
+          </tr>
+          <tr>
+            <td><span class="status medium">Medium</span></td>
+            <td>Setup script uses third-party GitHub acceleration proxy.</td>
+            <td><code>docker-setup.sh</code></td>
+            <td>Supply-chain trust includes the proxy endpoint.</td>
+            <td>Use direct GitHub release URLs or pin checksums.</td>
+          </tr>
+          <tr>
+            <td><span class="status medium">Medium</span></td>
+            <td><code>server.auth.enabled: false</code> in base config sample.</td>
+            <td><code>/root/dockercompose/data/config.yaml</code></td>
+            <td>If effective config falls back to base config, devices can bypass token checks.</td>
+            <td>Verify effective config from runtime and enable auth before public use.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Shutdown Record</h2>
+      <p>Commands executed:</p>
+      <pre>docker update --restart=no xiaozhi-esp32-server xiaozhi-esp32-server-db xiaozhi-esp32-server-redis phpmyadmin
+docker stop xiaozhi-esp32-server xiaozhi-esp32-server-db xiaozhi-esp32-server-redis phpmyadmin</pre>
+      <table>
+        <thead>
+          <tr><th>Container</th><th>Post-action status</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>xiaozhi-esp32-server</code></td><td>Exited</td><td>Main backend crash-looping; stopped and auto-restart disabled.</td></tr>
+          <tr><td><code>xiaozhi-esp32-server-db</code></td><td>Exited</td><td>Xiaozhi MySQL backend stopped.</td></tr>
+          <tr><td><code>xiaozhi-esp32-server-redis</code></td><td>Exited</td><td>Xiaozhi Redis backend stopped.</td></tr>
+          <tr><td><code>phpmyadmin</code></td><td>Exited</td><td>Admin DB surface stopped.</td></tr>
+          <tr><td><code>xiaozhi-esp32-server-web</code></td><td>Still running</td><td>Shared nginx edge for multiple non-Xiaozhi domains; stopping it would create collateral outage.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. Recommended Recovery Before Re-enable</h2>
+      <ol>
+        <li>Rotate MySQL, manager API and any provider/API tokens found in runtime config.</li>
+        <li>Move secrets out of compose/YAML into Docker secrets or root-only env files.</li>
+        <li>Fix <code>manager-api.url</code> so Python server talks to the real manager API upstream, not an nginx route that loops to its own OTA port.</li>
+        <li>Run manager API as a visible container/process and verify <code>/xiaozhi/config/server-base</code> returns <code>200</code> before starting Python server.</li>
+        <li>Remove <code>seccomp:unconfined</code> and drop unnecessary privileges.</li>
+        <li>Bind admin port <code>8002</code> to localhost/VPN or protect it with edge allowlist and auth.</li>
+        <li>Enable device auth for production and remove sample allowed devices.</li>
+        <li>After remediation, re-enable restart only for healthy services: <code>docker update --restart=always ...</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>7. Confidence & Limits</h2>
+      <ul>
+        <li>This audit was read-only for repo/content and runtime inspection, except for the requested shutdown action.</li>
+        <li>The Python server image lacks <code>ps</code>, so process inspection inside that container was limited; crash-loop logs and Docker state were available.</li>
+        <li>No disk forensics, packet capture, host auth log analysis or image-layer diffing was performed in this pass.</li>
+        <li>Current evidence supports: <strong>service misconfiguration and unhealthy deployment</strong>, not a confirmed external compromise.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
