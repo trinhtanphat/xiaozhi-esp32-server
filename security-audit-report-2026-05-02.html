@@ -105,11 +105,11 @@
     <header>
       <span class="pill medium">Security & Runtime Audit</span>
       <h1>Xiaozhi ESP32 Server</h1>
-      <p>Audit nhanh repo, Docker runtime, logs, cấu hình deploy và hành động shutdown theo yêu cầu ngày 2026-05-02.</p>
+      <p>Audit nhanh repo, Docker runtime, logs, cấu hình deploy và hành động shutdown theo yêu cầu ngày 2026-05-02. Addendum ngày 2026-05-04 kiểm tra riêng nghi vấn logo/cảnh báo chính phủ Trung Quốc.</p>
       <div class="meta">
         <div><strong>Repo:</strong> <code>/root/xiaozhi-esp32-server</code></div>
         <div><strong>Runtime compose:</strong> <code>/root/dockercompose/docker-compose.yml</code></div>
-        <div><strong>Kết luận:</strong> <span class="status high">Không thấy bằng chứng hack, nhưng service đang lỗi nghiêm trọng</span></div>
+        <div><strong>Kết luận:</strong> <span class="status high">Không thấy bằng chứng hack; logo gov là footer ICP/公安 upstream</span></div>
         <div><strong>Action:</strong> <span class="status ok">Backend Xiaozhi đã shutdown</span></div>
       </div>
     </header>
@@ -174,6 +174,59 @@
           </tr>
         </tbody>
       </table>
+    </section>
+
+    <section>
+      <h2>2.1 Addendum 2026-05-04: China Gov / Warning Logo Check</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Root cause likely</h3>
+          <p>Logo/cụm nhìn giống chính phủ Trung Quốc đến từ component upstream <code>VersionFooter.vue</code>. Component này có link <code>www.beian.gov.cn</code>, link <code>beian.miit.gov.cn</code> và icon 公安/备案 hardcoded để hiển thị ICP/公安 filing khi public config trả giá trị khác <code>null</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Runtime state checked</h3>
+          <p>Container còn chạy: <code>xiaozhi-esp32-server-web</code> image <code>ghcr.io/trinhtanphat/xiaozhi-esp32-server:vnso_web_latest</code>. Endpoint đúng của frontend là <code>/xiaozhi/user/pub-config</code>; hiện local và public đều trả <code>502</code> vì backend đã shutdown. Root <code>/</code> vẫn serve SPA HTML.</p>
+        </div>
+        <div class="card">
+          <h3>No injection evidence</h3>
+          <p>Scan <code>/root/dockercompose/nginx.conf</code> và <code>nginx -T</code> trong container không thấy <code>sub_filter</code>, rewrite inject nội dung gov hoặc redirect lạ cho footer. Source scan chỉ thấy các chuỗi <code>warning</code>/<code>警告</code> là i18n/message UI thông thường.</p>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Evidence</th><th>Location / command</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Footer shows GA/ICP only when values are not <code>null</code>.</td>
+            <td><code>main/manager-web/src/components/VersionFooter.vue</code></td>
+            <td>Expected upstream feature, not by itself a compromise indicator.</td>
+          </tr>
+          <tr>
+            <td>Public config returns <code>beianIcpNum</code>/<code>beianGaNum</code> from DB params.</td>
+            <td><code>LoginController.pubConfig()</code>, keys <code>server.beian_icp_num</code>, <code>server.beian_ga_num</code></td>
+            <td>If DB values were changed away from <code>null</code>, footer appears.</td>
+          </tr>
+          <tr>
+            <td>DB changelog defaults both beian params to <code>null</code>.</td>
+            <td><code>main/manager-api/src/main/resources/db/changelog/202505182234.sql</code></td>
+            <td>Default install should not show the gov/ICP links.</td>
+          </tr>
+          <tr>
+            <td>Live API check: <code>http://127.0.0.1:8002/xiaozhi/user/pub-config</code> returns <code>502</code>.</td>
+            <td>Runtime curl, 2026-05-04</td>
+            <td>Backend is still stopped/unhealthy, so current DB beian values could not be read without re-enabling services.</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Fix applied in source</h3>
+      <p>Updated <code>VersionFooter.vue</code> so ICP/公安 links only render on China domains (<code>.cn</code>/<code>.com.cn</code>) or when a build explicitly sets <code>VUE_APP_SHOW_BEIAN=true</code>. On <code>xiaozhi.vnso.vn</code>, this prevents the Chinese gov/filing footer from appearing even if DB params are accidentally populated.</p>
+      <h3>Operational remediation</h3>
+      <ol>
+        <li>When backend DB is intentionally brought up, set <code>server.beian_icp_num</code> and <code>server.beian_ga_num</code> back to string <code>null</code> unless the deployment legally requires China ICP/公安 filing.</li>
+        <li>Rebuild/redeploy the web image after the source fix before exposing Xiaozhi again.</li>
+        <li>Keep <code>/xiaozhi/*</code> behind allowlist/VPN until manager API, auth and secrets are remediated.</li>
+      </ol>
     </section>
 
     <section>

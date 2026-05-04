@@ -2,8 +2,8 @@
   <div class="copyright">
     <div class="footer-content">
       <span>{{ year }} {{ name }} {{ version }}</span>
-      <template v-if="beianGaNum !== 'null'">
-        <span v-if="beianIcpNum !== 'null' || name">|</span>
+      <template v-if="showBeianGaNum">
+        <span v-if="showBeianIcpNum || name">|</span>
         <a :href="'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=' + beianGaNum" target="_blank"
           rel="noopener" class="beian-link">
           <img
@@ -12,7 +12,7 @@
           <span class="beian-text">{{ beianGaNum }}</span>
         </a>
       </template>
-      <template v-if="beianIcpNum !== 'null'">
+      <template v-if="showBeianIcpNum">
         <span v-if="name">|</span>
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="beian-link">
           <span class="beian-text">{{ beianIcpNum }}</span>
@@ -34,7 +34,25 @@ export default {
       beianIcpNum: state => state.pubConfig.beianIcpNum,
       beianGaNum: state => state.pubConfig.beianGaNum,
       year: state => state.pubConfig.year
-    })
+    }),
+    allowBeianLinks() {
+      const explicitEnable = String(process.env.VUE_APP_SHOW_BEIAN || '').toLowerCase() === 'true';
+      if (explicitEnable) return true;
+      const hostname = window.location.hostname.toLowerCase();
+      return hostname.endsWith('.cn') || hostname.endsWith('.com.cn');
+    },
+    showBeianIcpNum() {
+      return this.allowBeianLinks && this.hasPublicRecordValue(this.beianIcpNum);
+    },
+    showBeianGaNum() {
+      return this.allowBeianLinks && this.hasPublicRecordValue(this.beianGaNum);
+    }
+  },
+  methods: {
+    hasPublicRecordValue(value) {
+      const normalized = String(value || '').trim().toLowerCase();
+      return Boolean(normalized) && normalized !== 'null' && normalized !== 'undefined';
+    }
   },
   mounted() {
     this.$store.dispatch('fetchPubConfig')
