@@ -17,6 +17,9 @@ server:
   # 所以如果你使用docker部署时，将vision_explain设置成局域网地址
   # 如果你使用公网部署时，将vision_explain设置成公网地址
   vision_explain: http://你的ip或者域名:端口号/mcp/vision/explain
+  websocket_max_payload_bytes: 16384
+  websocket_ping_interval: 30
+  websocket_ping_timeout: 15
 manager-api:
   # 你的manager-api的地址，最好使用局域网ip
   # 如果使用docker部署，请使用填写成 http://xiaozhi-esp32-server-web:8002/xiaozhi

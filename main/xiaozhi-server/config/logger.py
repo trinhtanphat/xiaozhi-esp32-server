@@ -76,6 +76,7 @@ def setup_logging():
         log_dir = log_config.get("log_dir", "tmp")
         log_file = log_config.get("log_file", "server.log")
         data_dir = log_config.get("data_dir", "data")
+        json_format = bool(log_config.get("json_format", False))
 
         os.makedirs(log_dir, exist_ok=True)
         os.makedirs(data_dir, exist_ok=True)
@@ -84,7 +85,13 @@ def setup_logging():
         logger.remove()
 
         # 输出到控制台
-        logger.add(sys.stdout, format=log_format, level=log_level, filter=formatter)
+        logger.add(
+            sys.stdout,
+            format=log_format,
+            level=log_level,
+            filter=formatter,
+            serialize=json_format,
+        )
 
         # 输出到文件 - 统一目录，按大小轮转
         # 日志文件完整路径
@@ -103,6 +110,7 @@ def setup_logging():
             enqueue=True,  # 异步安全
             backtrace=True,
             diagnose=True,
+            serialize=json_format,
         )
         _logger_initialized = True  # 标记为已初始化
 

@@ -192,7 +192,7 @@ class TTSProvider(TTSProviderBase):
                     if message.content_detail:
                         try:
                             logger.bind(tag=TAG).debug(
-                                f"开始发送TTS文本: {message.content_detail}"
+                                f"开始发送TTS文本: [TRANSCRIPT_REDACTED](len={len(message.content_detail)})"
                             )
                             future = asyncio.run_coroutine_threadsafe(
                                 self.text_to_speak(message.content_detail, None),

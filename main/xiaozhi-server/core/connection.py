@@ -17,6 +17,7 @@ from core.utils.util import (
     check_asr_update,
     filter_sensitive_info,
 )
+from core.utils.log_sanitizer import redact_transcript_for_log
 from typing import Dict, Any
 from collections import deque
 from core.utils.modules_initialize import (
@@ -195,6 +196,9 @@ class ConnectionHandler:
         self.timeout_seconds = (
                 int(self.config.get("close_connection_no_voice_time", 120)) + 60
         )  # 在原来第一道关闭的基础上加60秒，进行二道关闭
+        self.max_ws_payload_size = int(
+            self.config.get("server", {}).get("websocket_max_payload_bytes", 16 * 1024)
+        )
         self.timeout_task = None
 
         # {"mcp":true} 表示启用MCP功能
@@ -220,8 +224,9 @@ class ConnectionHandler:
                 self.client_ip = real_ip.split(",")[0].strip()
             else:
                 self.client_ip = ws.remote_address[0]
+            safe_headers = filter_sensitive_info(self.headers)
             self.logger.bind(tag=TAG).info(
-                f"{self.client_ip} conn - Headers: {self.headers}"
+                f"{self.client_ip} conn - Headers: {safe_headers}"
             )
 
             self.device_id = self.headers.get("device-id", None)
@@ -327,6 +332,16 @@ class ConnectionHandler:
 
     async def _route_message(self, message):
         """消息路由"""
+        payload_size = len(message.encode("utf-8")) if isinstance(message, str) else len(message)
+        if self.max_ws_payload_size > 0 and payload_size > self.max_ws_payload_size:
+            self.logger.bind(tag=TAG).warning(
+                f"WebSocket payload too large: size={payload_size}, max={self.max_ws_payload_size}. Closing connection."
+            )
+            self.stop_event.set()
+            if self.websocket:
+                await self.websocket.close(code=1009, reason="payload too large")
+            return
+
         # 检查是否已经获取到真实的绑定状态
         if not self.bind_completed_event.is_set():
             # 还没有获取到真实状态，等待直到获取到真实状态或超时
@@ -833,7 +848,9 @@ class ConnectionHandler:
 
     def chat(self, query, depth=0):
         if query is not None:
-            self.logger.bind(tag=TAG).info(f"大模型收到用户消息: {query}")
+            self.logger.bind(tag=TAG).info(
+                f"大模型收到用户消息: {redact_transcript_for_log(query)}"
+            )
 
         # 为最顶层时新建会话ID和发送FIRST请求
         if depth == 0:
@@ -962,7 +979,9 @@ class ConnectionHandler:
                     ),
                 )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"LLM 处理出错 {query}: {e}")
+            self.logger.bind(tag=TAG).error(
+                f"LLM 处理出错 {redact_transcript_for_log(query)}: {e}"
+            )
             return None
 
         # 处理流式响应
@@ -1126,11 +1145,8 @@ class ConnectionHandler:
                     content_type=ContentType.ACTION,
                 )
             )
-            # 使用lambda延迟计算，只有在DEBUG级别时才执行get_llm_dialogue()
             self.logger.bind(tag=TAG).debug(
-                lambda: json.dumps(
-                    self.dialogue.get_llm_dialogue(), indent=4, ensure_ascii=False
-                )
+                f"LLM dialogue updated: turns={len(self.dialogue.dialogue)}"
             )
 
             # 清理临时插入的工具调用提醒消息（使用标记清理）

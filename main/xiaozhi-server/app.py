@@ -125,7 +125,7 @@ async def main():
     try:
         await wait_for_exit()  # 阻塞直到收到退出信号
     except asyncio.CancelledError:
-        print("任务被取消，清理资源中...")
+        logger.bind(tag=TAG).warning("任务被取消，清理资源中...")
     finally:
         # 停止全局GC管理器
         await gc_manager.stop()
@@ -142,11 +142,11 @@ async def main():
             timeout=3.0,
             return_when=asyncio.ALL_COMPLETED,
         )
-        print("服务器已关闭，程序退出。")
+        logger.bind(tag=TAG).info("服务器已关闭，程序退出。")
 
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("手动中断，程序终止。")
+        logger.bind(tag=TAG).warning("手动中断，程序终止。")

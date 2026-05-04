@@ -72,10 +72,26 @@ class WebSocketServer:
         server_config = self.config["server"]
         host = server_config.get("ip", "0.0.0.0")
         port = int(server_config.get("port", 8000))
+        max_payload_bytes = int(
+            server_config.get("websocket_max_payload_bytes", 16 * 1024)
+        )
+        enable_ping = self.config.get("enable_websocket_ping", True)
+        ping_interval = int(server_config.get("websocket_ping_interval", 30))
+        ping_timeout = int(server_config.get("websocket_ping_timeout", 15))
 
         async with websockets.serve(
-            self._handle_connection, host, port, process_request=self._http_response
+            self._handle_connection,
+            host,
+            port,
+            process_request=self._http_response,
+            max_size=max_payload_bytes,
+            ping_interval=ping_interval if enable_ping else None,
+            ping_timeout=ping_timeout if enable_ping else None,
+            close_timeout=5,
         ):
+            self.logger.bind(tag=TAG).info(
+                f"WebSocket server listening on {host}:{port}, max_payload={max_payload_bytes}, ping={enable_ping}"
+            )
             await asyncio.Future()
 
     async def _handle_connection(self, websocket: websockets.ServerConnection):

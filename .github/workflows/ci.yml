@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - vnso
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  python-syntax:
+    name: Python syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Compile Python sources
+        working-directory: main/xiaozhi-server
+        run: python -m compileall app.py core config plugins_func
+
+  manager-api-tests:
+    name: Manager API unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run Maven unit tests
+        working-directory: main/manager-api
+        run: mvn -B -DskipTests=false -Dtest=AESUtilsTest test
+
+  manager-web-build:
+    name: Manager Web build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: main/manager-web/package-lock.json
+      - name: Install dependencies
+        working-directory: main/manager-web
+        run: npm ci
+      - name: Build frontend
+        working-directory: main/manager-web
+        run: npm run build

@@ -484,8 +484,10 @@ def filter_sensitive_info(config: dict) -> dict:
     """
     sensitive_keys = [
         "api_key",
+        "authorization",
         "personal_access_token",
         "access_token",
+        "password",
         "token",
         "secret",
         "access_key_secret",
@@ -517,7 +519,6 @@ def filter_sensitive_info(config: dict) -> dict:
         return filtered
 
     return _filter_dict(copy.deepcopy(config))
-
 
 def get_vision_url(config: dict) -> str:
     """获取 vision URL
